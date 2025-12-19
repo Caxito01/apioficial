@@ -130,15 +130,13 @@
               <label>Contatos Excedentes</label>
               <input type="text" id="excedentes" disabled placeholder="0" class="destaque-excedentes">
             </div>
-            <div id="grupoExcedentes" style="display: none;">
-              <div class="form-group">
-                <label>Custo por 100 Extras</label>
-                <input type="text" id="custoPor100" disabled placeholder="R$ 0,00">
-              </div>
-              <div class="form-group">
-                <label>Custo dos Excedentes</label>
-                <input type="text" id="custoExcedentes" disabled placeholder="R$ 0,00" class="destaque-excedentes">
-              </div>
+            <div class="form-group">
+              <label>Custo por 100 Extras</label>
+              <input type="text" id="custoPor100" disabled placeholder="R$ 0,00">
+            </div>
+            <div class="form-group">
+              <label>Custo dos Excedentes</label>
+              <input type="text" id="custoExcedentes" disabled placeholder="R$ 0,00" class="destaque-excedentes">
             </div>
           </div>
           
@@ -251,7 +249,6 @@
         document.getElementById('excedentes').value = '';
         document.getElementById('custoPor100').value = '';
         document.getElementById('custoExcedentes').value = '';
-        document.getElementById('grupoExcedentes').style.display = 'none';
         // Remove destaque anterior
         document.querySelectorAll('tbody tr').forEach(tr => {
           tr.classList.remove('destaque-nivel');
@@ -302,25 +299,23 @@
       const excedentes = Math.max(0, qtd - limitePlanAnterior);
       
       document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
+      document.getElementById('custoPor100').value = formatarMoeda(plano.custoPor100);
       
-      // Mostra/oculta o grupo de excedentes
+      let custoExcedentesValor = 0;
       if (excedentes === 0 || plano.nivel === 1) {
-        // Sem excedentes - oculta
-        document.getElementById('grupoExcedentes').style.display = 'none';
-        document.getElementById('excedentes').value = '0';
-        const total = plano.mensalidade;
-        document.getElementById('custoTotal').textContent = formatarMoeda(total);
+        // Sem excedentes
+        document.getElementById('custoExcedentes').value = formatarMoeda(0);
       } else {
-        // Com excedentes - mostra
-        document.getElementById('grupoExcedentes').style.display = 'block';
+        // Com excedentes
         const blocosExcedentes = Math.ceil(excedentes / 100);
-        const custoExcedentesValor = blocosExcedentes * plano.custoPor100;
-        document.getElementById('custoPor100').value = formatarMoeda(plano.custoPor100);
+        custoExcedentesValor = blocosExcedentes * plano.custoPor100;
         document.getElementById('custoExcedentes').value = `${blocosExcedentes} × ${formatarMoeda(plano.custoPor100)} = ${formatarMoeda(custoExcedentesValor)}`;
-        
-        const total = plano.mensalidade + custoExcedentesValor;
-        document.getElementById('custoTotal').textContent = formatarMoeda(total);
       }
+      
+      // Calcula total: mensalidade + custo excedentes
+      const total = plano.mensalidade + custoExcedentesValor;
+      document.getElementById('custoTotal').textContent = formatarMoeda(total);
+      document.getElementById('resultadoBox').style.display = 'block';
       document.getElementById('resultadoBox').style.display = 'block';
     }
 
