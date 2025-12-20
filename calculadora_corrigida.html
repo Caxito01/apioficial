@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BotConversa - Calculadora</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+    
+    /* Header */
+    .header { background: #2a9d8f; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-size: 18px; font-weight: 500; }
+    .header span { font-size: 13px; }
+    
+    /* Layout */
+    .container { display: flex; min-height: calc(100vh - 45px); }
+    
+    /* Sidebar */
+    .sidebar { width: 220px; background: #fff; border-right: 1px solid #ddd; }
+    .sidebar-section { background: #5bc0de; color: white; padding: 8px 15px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+    .sidebar-item { padding: 10px 15px; font-size: 14px; color: #333; cursor: pointer; border-bottom: 1px solid #eee; }
+    .sidebar-item:hover { background: #f0f0f0; }
+    .sidebar-item.active { background: #e8f4f8; border-left: 3px solid #5bc0de; }
+    
+    /* Main Content */
+    .main { flex: 1; padding: 20px; overflow-y: auto; }
+    .breadcrumb { font-size: 13px; color: #666; margin-bottom: 15px; }
+    .breadcrumb span { color: #5bc0de; }
+    .page-title { font-size: 20px; color: #333; margin-bottom: 20px; font-weight: 400; }
+    
+    /* Cards */
+    .card { background: white; border: 1px solid #ddd; margin-bottom: 20px; }
+    .card-header { background: #5bc0de; color: white; padding: 10px 15px; font-size: 14px; font-weight: 500; }
+    .card-body { padding: 20px; }
+    
+    /* Form Grid */
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { font-size: 12px; color: #666; margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+    .form-group input, .form-group select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; }
+    .form-group input:focus { outline: none; border-color: #5bc0de; }
+    .form-group input:disabled { background: #f0f0f0; color: #333; }
+    
+    /* Table Style */
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #f8f8f8; text-align: left; padding: 10px; border-bottom: 2px solid #ddd; color: #666; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+    td { padding: 10px; border-bottom: 1px solid #eee; }
+    tr:hover { background: #f9f9f9; }
+    
+    .resultado-box { background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 5px; margin-top: 15px; }
+    .resultado-box .total-label { font-size: 12px; color: #666; font-weight: 600; }
+    .resultado-box .total-value { font-size: 28px; color: #2e7d32; font-weight: bold; margin-top: 10px; }
+    
+    .conta-texto { font-size: 13px; color: #666; margin-top: 5px; font-style: italic; }
+    .alert-consultor { background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 3px; color: #856404; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>BotConversa</h1>
+    <span>BEM-VINDO, USUÁRIO</span>
+  </div>
+  
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-section">Calculadoras</div>
+      <div class="sidebar-item active">Calculadora de Dias</div>
+      <div class="sidebar-item">Calculadora de Custos</div>
+      <div class="sidebar-section">Tabelas</div>
+      <div class="sidebar-item">Planos</div>
+      <div class="sidebar-item">Preços</div>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrumb">Início › <span>Calculadoras</span></div>
+      <div class="page-title">Calculadora de Dias e Custos</div>
+      
+      <!-- SEÇÃO 1: Calculadora de Dias -->
+      <div class="card">
+        <div class="card-header">📅 CALCULADORA DE DIAS</div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Data de Destino</label>
+              <input type="date" id="dataDestino">
+            </div>
+            <div class="form-group">
+              <label>Dias Restantes</label>
+              <input type="text" id="diasRestantes" disabled placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>Dias ÷ 3 (Arredondado)</label>
+              <input type="text" id="diasDividido" disabled placeholder="0">
+            </div>
+          </div>
+          <div class="conta-texto" id="contaDias"></div>
+        </div>
+      </div>
+      
+      <!-- SEÇÃO 2: Calculadora de Custos -->
+      <div class="card">
+        <div class="card-header">💰 CALCULADORA DE CUSTOS BOTCONVERSA</div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Quantidade de Contatos</label>
+              <input type="number" id="qtdContatos" min="1" value="1" placeholder="Digite a quantidade">
+            </div>
+            <div class="form-group">
+              <label>Nível do Plano</label>
+              <input type="text" id="nivelPlano" disabled>
+            </div>
+            <div class="form-group">
+              <label>Limite de Contatos</label>
+              <input type="text" id="limiteContatos" disabled>
+            </div>
+            <div class="form-group">
+              <label>Mensalidade</label>
+              <input type="text" id="mensalidade" disabled>
+            </div>
+            <div class="form-group">
+              <label>Contatos Excedentes</label>
+              <input type="text" id="excedentes" disabled>
+            </div>
+            <div class="form-group">
+              <label>Custo por 100 Extras</label>
+              <input type="text" id="custoPor100" disabled>
+            </div>
+            <div class="form-group">
+              <label>Custo dos Excedentes</label>
+              <input type="text" id="custoExcedentes" disabled>
+            </div>
+          </div>
+          
+          <div class="resultado-box">
+            <div class="total-label">💵 CUSTO TOTAL MENSAL</div>
+            <div class="total-value" id="custoTotal">R$ 199,00</div>
+          </div>
+          <div class="alert-consultor" id="alertConsultor" style="display:none;">
+            ⚠️ Para mais de 10.000 contatos, entre em contato com um consultor.
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tabela de Referência -->
+      <div class="card">
+        <div class="card-header">📋 TABELA DE PLANOS - REFERÊNCIA</div>
+        <div class="card-body">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Plano</th>
+                  <th>Contatos/Mês</th>
+                  <th>Mensalidade</th>
+                  <th>Custo por 100 (excedente)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Nível 1</td><td>Até 500</td><td>R$ 199,00</td><td>R$ 39,80</td></tr>
+                <tr><td>Nível 2</td><td>Até 1.000</td><td>R$ 299,00</td><td>R$ 23,90</td></tr>
+                <tr><td>Nível 3</td><td>Até 2.500</td><td>R$ 599,00</td><td>R$ 23,96</td></tr>
+                <tr><td>Nível 4</td><td>Até 5.000</td><td>R$ 999,00</td><td>R$ 19,98</td></tr>
+                <tr><td>Nível 5</td><td>Até 8.000</td><td>R$ 1.499,00</td><td>R$ 18,74</td></tr>
+                <tr><td>Nível 6</td><td>Até 10.000</td><td>R$ 1.799,00</td><td>R$ 17,99</td></tr>
+                <tr><td>Nível 7</td><td>10.000+</td><td>Consultor</td><td>Consultor</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const planos = [
+      { nivel: 1, limite: 500, mensalidade: 199, custoPor100: 39.80 },
+      { nivel: 2, limite: 1000, mensalidade: 299, custoPor100: 23.90 },
+      { nivel: 3, limite: 2500, mensalidade: 599, custoPor100: 23.96 },
+      { nivel: 4, limite: 5000, mensalidade: 999, custoPor100: 19.98 },
+      { nivel: 5, limite: 8000, mensalidade: 1499, custoPor100: 18.74 },
+      { nivel: 6, limite: 10000, mensalidade: 1799, custoPor100: 17.99 },
+      { nivel: 7, limite: Infinity, mensalidade: null, custoPor100: null }
+    ];
+
+    function formatarMoeda(valor) {
+      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function calcularDias() {
+      const input = document.getElementById('dataDestino').value;
+      if (!input) {
+        document.getElementById('diasRestantes').value = '';
+        document.getElementById('diasDividido').value = '';
+        document.getElementById('contaDias').innerHTML = '';
+        return;
+      }
+
+      const dataDestino = new Date(input + 'T00:00:00');
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      
+      const diffTime = dataDestino - hoje;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      document.getElementById('diasRestantes').value = diffDays + ' dias';
+      
+      const dividido = diffDays / 3;
+      const arredondado = Math.ceil(dividido);
+      document.getElementById('diasDividido').value = arredondado + ' dias';
+      document.getElementById('contaDias').innerHTML = `<strong>Cálculo:</strong> ${diffDays} ÷ 3 = ${dividido.toFixed(2)} → <strong>${arredondado} dias</strong>`;
+    }
+
+    function calcularCustos() {
+      const qtd = parseInt(document.getElementById('qtdContatos').value) || 0;
+      
+      if (qtd <= 0) {
+        document.getElementById('qtdContatos').value = 1;
+        calcularCustos();
+        return;
+      }
+
+      // Encontra o plano que atende essa quantidade
+      const plano = planos.find(p => qtd <= p.limite);
+      
+      if (!plano || plano.nivel === 7) {
+        // Nível 7 - acima de 10.000
+        document.getElementById('nivelPlano').value = 'Nível 7';
+        document.getElementById('limiteContatos').value = '10.000+';
+        document.getElementById('mensalidade').value = 'Fale com consultor';
+        document.getElementById('excedentes').value = '-';
+        document.getElementById('custoPor100').value = '-';
+        document.getElementById('custoExcedentes').value = '-';
+        document.getElementById('custoTotal').textContent = 'Fale com consultor';
+        document.getElementById('alertConsultor').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('alertConsultor').style.display = 'none';
+      document.getElementById('nivelPlano').value = 'Nível ' + plano.nivel;
+      document.getElementById('limiteContatos').value = plano.limite.toLocaleString('pt-BR');
+      document.getElementById('mensalidade').value = formatarMoeda(plano.mensalidade);
+      document.getElementById('custoPor100').value = formatarMoeda(plano.custoPor100);
+
+      // Calcula excedentes: quantidade - limite do plano
+      const excedentes = Math.max(0, qtd - plano.limite);
+      
+      document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
+      
+      if (excedentes === 0) {
+        // Sem excedentes
+        document.getElementById('custoExcedentes').value = formatarMoeda(0);
+        const total = plano.mensalidade;
+        document.getElementById('custoTotal').textContent = formatarMoeda(total);
+      } else {
+        // Com excedentes
+        const blocosExcedentes = Math.ceil(excedentes / 100);
+        const custoExc = blocosExcedentes * plano.custoPor100;
+        document.getElementById('custoExcedentes').value = `${blocosExcedentes} × ${formatarMoeda(plano.custoPor100)} = ${formatarMoeda(custoExc)}`;
+        
+        const total = plano.mensalidade + custoExc;
+        document.getElementById('custoTotal').textContent = formatarMoeda(total);
+      }
+    }
+
+    // Inicializar quando DOM carregar
+    document.addEventListener('DOMContentLoaded', function() {
+      // Eventos
+      document.getElementById('dataDestino').addEventListener('change', calcularDias);
+      document.getElementById('qtdContatos').addEventListener('input', calcularCustos);
+      
+      // Calcular custos inicial
+      calcularCustos();
+    });
+  </script>
+</body>
+</html>

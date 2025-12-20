@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BotConversa - Calculadora de Dias</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="header">
+    <h1>BotConversa</h1>
+    <span>BEM-VINDO, USUÁRIO</span>
+  </div>
+  
+  <div class="container">
+    <div class="main">
+      <div class="breadcrumb">
+        <a href="../index.html">Início</a> › <span>Calculadora de Dias</span>
+      </div>
+      <div class="page-title">📅 CALCULADORA DE CONVERSÃO PARA API OFICIAL</div>
+      
+      <!-- SEÇÃO 1: Calculadora de Dias -->
+      <div class="card">
+        <div class="card-header">📅 CALCULADORA DE CONVERSÃO PARA API OFICIAL</div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Data de VENCIMENTO</label>
+              <input type="date" id="dataDestino">
+            </div>
+            <div class="form-group">
+              <label>Dias Restantes</label>
+              <input type="text" id="diasRestantes" disabled placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>Dias ÷ 3 (Arredondado)</label>
+              <input type="text" id="diasDividido" disabled placeholder="0">
+            </div>
+          </div>
+          
+          <div class="resultado-box" id="resultadoBoxDias" style="display: none;">
+            <div class="total-label">📊 TOTAL DE DIAS RESTANTES</div>
+            <div class="total-value" id="diasTotal">0 dias</div>
+            <div class="conta-texto" id="contaDias"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explicação -->
+      <div class="card">
+        <div class="card-header">ℹ️ COMO FUNCIONA</div>
+        <div class="card-body">
+          <p><strong>O que é essa calculadora?</strong></p>
+          <p>Essa calculadora converte o tempo restante de uma API para dias que poderão ser usados na API Oficial.</p>
+          
+          <p style="margin-top: 15px;"><strong>Como calcular:</strong></p>
+          <ol style="margin-left: 20px; margin-top: 10px;">
+            <li>Insira a data de vencimento da sua API atual</li>
+            <li>A calculadora mostrará quantos dias ainda faltam</li>
+            <li>Depois divide esse número por 3 e arredonda para cima</li>
+            <li>O resultado é a quantidade de dias que você terá na API Oficial</li>
+          </ol>
+
+          <p style="margin-top: 15px;"><strong>Exemplo:</strong></p>
+          <ul style="margin-left: 20px; margin-top: 10px;">
+            <li>Você tem 100 dias restantes</li>
+            <li>100 ÷ 3 = 33,33</li>
+            <li>Arredonda para 34 dias na API Oficial</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/functions.js"></script>
+  <script>
+    function calcularDias() {
+      const input = document.getElementById('dataDestino').value;
+      if (!input) {
+        document.getElementById('diasRestantes').value = '';
+        document.getElementById('diasDividido').value = '';
+        document.getElementById('contaDias').innerHTML = '';
+        document.getElementById('resultadoBoxDias').style.display = 'none';
+        return;
+      }
+
+      const dataDestino = new Date(input + 'T00:00:00');
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      
+      const diffTime = dataDestino - hoje;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      document.getElementById('diasRestantes').value = diffDays + ' dias';
+      
+      const dividido = diffDays / 3;
+      const arredondado = Math.ceil(dividido);
+      document.getElementById('diasDividido').value = arredondado + ' dias';
+      
+      // Calcula a data final baseado no arredondado
+      const dataFinal = new Date();
+      dataFinal.setDate(dataFinal.getDate() + arredondado);
+      const diaFinal = String(dataFinal.getDate()).padStart(2, '0');
+      const mesFinal = String(dataFinal.getMonth() + 1).padStart(2, '0');
+      const anoFinal = dataFinal.getFullYear();
+      const dataFinalFormatada = `${diaFinal}/${mesFinal}/${anoFinal}`;
+      
+      document.getElementById('contaDias').innerHTML = `<div style="text-align: center;">
+        <div><strong>Cálculo:</strong> ${diffDays} ÷ 3 = ${dividido.toFixed(2)}</div>
+        <div class="resultado-dias-final">${arredondado} dias de Api Oficial</div>
+        <div class="conta-texto-data"><strong>Data final:</strong> ${dataFinalFormatada}</div>
+      </div>`;
+      
+      // Mostra o box destacado
+      document.getElementById('diasTotal').textContent = diffDays + ' dias';
+      document.getElementById('resultadoBoxDias').style.display = 'block';
+    }
+
+    // Inicializar eventos quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('dataDestino').addEventListener('change', calcularDias);
+    });
+  </script>
+</body>
+</html>

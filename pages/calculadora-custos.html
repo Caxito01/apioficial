@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BotConversa - Calculadora de Custos</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="header">
+    <h1>BotConversa</h1>
+    <span>BEM-VINDO, USUÁRIO</span>
+  </div>
+  
+  <div class="container">
+    <div class="main">
+      <div class="breadcrumb">
+        <a href="../index.html">Início</a> › <span>Calculadora de Custos</span>
+      </div>
+      <div class="page-title">💰 CALCULADORA DE CUSTOS API OFICIAL BOTCONVERSA</div>
+      
+      <!-- SEÇÃO: Calculadora de Custos -->
+      <div class="card">
+        <div class="card-header">💰 CALCULADORA DE CUSTOS API OFICIAL BOTCONVERSA</div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Quantidade de Contatos</label>
+              <input type="number" id="qtdContatos" min="1" placeholder="Digite a quantidade">
+            </div>
+            <div class="form-group">
+              <label>Nível do Plano</label>
+              <input type="text" id="nivelPlano" disabled placeholder="-">
+            </div>
+            <div class="form-group">
+              <label>Contatos Inclusos (Franquia)</label>
+              <input type="text" id="limiteContatos" disabled placeholder="-">
+            </div>
+            <div class="form-group">
+              <label>Mensalidade</label>
+              <input type="text" id="mensalidade" disabled placeholder="R$ 0,00">
+            </div>
+            <div class="form-group">
+              <label>Contatos Excedentes</label>
+              <input type="text" id="excedentes" disabled placeholder="0" class="destaque-excedentes">
+            </div>
+            <div class="form-group">
+              <label>Custo por 100 Extras</label>
+              <input type="text" id="custoPor100" disabled placeholder="R$ 0,00">
+            </div>
+            <div class="form-group">
+              <label>Custo dos Excedentes</label>
+              <input type="text" id="custoExcedentes" disabled placeholder="R$ 0,00" class="destaque-excedentes">
+            </div>
+          </div>
+          
+          <div class="resultado-box" id="resultadoBox" style="display: none;">
+            <div class="total-label">💵 CUSTO TOTAL MENSAL</div>
+            <div class="total-value" id="custoTotal">R$ 0,00</div>
+          </div>
+          <div class="alert-consultor" id="alertConsultor" style="display:none;">
+            ⚠️ Para mais de 10.000 contatos, entre em contato com um consultor.
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tabela de Referência -->
+      <div class="card">
+        <div class="card-header">📋 TABELA DE PLANOS - REFERÊNCIA</div>
+        <div class="card-body">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Plano</th>
+                  <th>Intervalo de Contatos</th>
+                  <th>Franquia Incluída</th>
+                  <th>Mensalidade</th>
+                  <th>Custo por 100 (excedente)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr id="linha-nivel-1"><td>Nível 1</td><td>0 - 999</td><td>500</td><td>R$ 199,00</td><td>R$ 39,80</td></tr>
+                <tr id="linha-nivel-2"><td>Nível 2</td><td>1.000 - 2.499</td><td>1.000</td><td>R$ 299,00</td><td>R$ 23,90</td></tr>
+                <tr id="linha-nivel-3"><td>Nível 3</td><td>2.500 - 4.999</td><td>2.500</td><td>R$ 599,00</td><td>R$ 23,96</td></tr>
+                <tr id="linha-nivel-4"><td>Nível 4</td><td>5.000 - 7.999</td><td>5.000</td><td>R$ 999,00</td><td>R$ 19,98</td></tr>
+                <tr id="linha-nivel-5"><td>Nível 5</td><td>8.000 - 9.999</td><td>8.000</td><td>R$ 1.499,00</td><td>R$ 18,74</td></tr>
+                <tr id="linha-nivel-6"><td>Nível 6</td><td>10.000</td><td>10.000</td><td>R$ 1.799,00</td><td>R$ 17,99</td></tr>
+                <tr id="linha-nivel-7"><td>Nível 7</td><td>10.001+</td><td>Consultor</td><td>Consultor</td><td>Consultor</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explicação -->
+      <div class="card">
+        <div class="card-header">ℹ️ COMO FUNCIONA A CALCULADORA</div>
+        <div class="card-body">
+          <p><strong>O que é franquia?</strong></p>
+          <p>Cada plano inclui uma quantidade de contatos sem custo adicional. Essa é a franquia.</p>
+          
+          <p style="margin-top: 15px;"><strong>Como são cobrados os excedentes?</strong></p>
+          <p>Se você ultrapassar a franquia, paga um valor adicional a cada 100 contatos extras (ou fração de 100).</p>
+
+          <p style="margin-top: 15px;"><strong>Exemplos práticos:</strong></p>
+          <ul style="margin-left: 20px; margin-top: 10px;">
+            <li><strong>50 contatos:</strong> Nível 1 - R$ 199,00 (apenas a franquia)</li>
+            <li><strong>650 contatos:</strong> Nível 1 - R$ 199,00 + (2 × R$ 39,80) = R$ 278,60</li>
+            <li><strong>2.800 contatos:</strong> Nível 3 - R$ 599,00 + (3 × R$ 23,96) = R$ 671,88</li>
+            <li><strong>10.050 contatos:</strong> Fale com consultor (acima de 10.000)</li>
+          </ul>
+
+          <p style="margin-top: 15px;"><strong>Por que arredonda para cima?</strong></p>
+          <p>Se você tiver 150 contatos excedentes, isso é cobrado como 2 blocos de 100 (200 contatos).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/functions.js"></script>
+  <script>
+    const planos = getPlanos();
+
+    function calcularCustos() {
+      const qtd = parseInt(document.getElementById('qtdContatos').value) || 0;
+      
+      if (qtd <= 0) {
+        document.getElementById('resultadoBox').style.display = 'none';
+        // Limpa todos os campos
+        document.getElementById('nivelPlano').value = '';
+        document.getElementById('limiteContatos').value = '';
+        document.getElementById('mensalidade').value = '';
+        document.getElementById('excedentes').value = '';
+        document.getElementById('custoPor100').value = '';
+        document.getElementById('custoExcedentes').value = '';
+        // Remove destaque anterior
+        document.querySelectorAll('tbody tr').forEach(tr => {
+          tr.classList.remove('destaque-nivel');
+        });
+        return;
+      }
+
+      if (qtd < 1 || qtd > 999) {
+        // Se for menor que 1 ou maior que 999, aplicar lógica normal
+      } else {
+        // Para 1-999, forçar Nível 1
+        const plano = planos[0]; // Nível 1
+        document.getElementById('alertConsultor').style.display = 'none';
+        document.getElementById('nivelPlano').value = 'Nível ' + plano.nivel;
+        document.getElementById('limiteContatos').value = plano.contatosInclusos.toLocaleString('pt-BR');
+        document.getElementById('mensalidade').value = formatarMoeda(plano.mensalidade);
+        document.getElementById('custoPor100').value = formatarMoeda(plano.custoPor100);
+        document.querySelectorAll('tbody tr').forEach(tr => {
+          tr.classList.remove('destaque-nivel');
+        });
+        document.getElementById('linha-nivel-' + plano.nivel).classList.add('destaque-nivel');
+        const excedentes = Math.max(0, qtd - plano.contatosInclusos);
+        document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
+        let custoExcedentesValor = 0;
+        if (excedentes === 0) {
+          document.getElementById('custoExcedentes').value = formatarMoeda(0);
+        } else {
+          const blocosExcedentes = Math.ceil(excedentes / 100);
+          custoExcedentesValor = blocosExcedentes * plano.custoPor100;
+          document.getElementById('custoExcedentes').value = `${blocosExcedentes} × ${formatarMoeda(plano.custoPor100)} = ${formatarMoeda(custoExcedentesValor)}`;
+        }
+        const total = plano.mensalidade + custoExcedentesValor;
+        document.getElementById('custoTotal').textContent = formatarMoeda(total);
+        document.getElementById('resultadoBox').style.display = 'block';
+        return;
+      }
+
+      // Remove destaque anterior de todas as linhas
+      document.querySelectorAll('tbody tr').forEach(tr => {
+        tr.classList.remove('destaque-nivel');
+      });
+
+      // Encontra o plano que atende essa quantidade
+      const plano = planos.find(p => qtd >= p.minimo && qtd <= p.maximo);
+      
+      if (!plano) {
+        // Acima de 10.000 - consultor
+        document.getElementById('nivelPlano').value = 'Nível 7';
+        document.getElementById('limiteContatos').value = '10.001+';
+        document.getElementById('mensalidade').value = 'Fale com consultor';
+        document.getElementById('excedentes').value = '-';
+        document.getElementById('custoPor100').value = '-';
+        document.getElementById('custoExcedentes').value = '-';
+        document.getElementById('custoTotal').textContent = 'Fale com consultor';
+        document.getElementById('alertConsultor').style.display = 'block';
+        document.getElementById('resultadoBox').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('alertConsultor').style.display = 'none';
+      document.getElementById('nivelPlano').value = 'Nível ' + plano.nivel;
+      document.getElementById('limiteContatos').value = plano.contatosInclusos.toLocaleString('pt-BR');
+      document.getElementById('mensalidade').value = formatarMoeda(plano.mensalidade);
+      document.getElementById('custoPor100').value = formatarMoeda(plano.custoPor100);
+
+      // Destaca a linha da tabela do nível atual
+      document.getElementById('linha-nivel-' + plano.nivel).classList.add('destaque-nivel');
+
+      // Calcula excedentes em relação aos CONTATOS INCLUSOS do nível
+      const excedentes = Math.max(0, qtd - plano.contatosInclusos);
+      
+      document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
+      
+      let custoExcedentesValor = 0;
+      if (excedentes === 0) {
+        // Sem excedentes, só paga a franquia
+        document.getElementById('custoExcedentes').value = formatarMoeda(0);
+      } else {
+        // Com excedentes
+        const blocosExcedentes = Math.ceil(excedentes / 100);
+        custoExcedentesValor = blocosExcedentes * plano.custoPor100;
+        document.getElementById('custoExcedentes').value = `${blocosExcedentes} × ${formatarMoeda(plano.custoPor100)} = ${formatarMoeda(custoExcedentesValor)}`;
+      }
+      
+      // Calcula total: mensalidade + custo excedentes
+      const total = plano.mensalidade + custoExcedentesValor;
+      document.getElementById('custoTotal').textContent = formatarMoeda(total);
+      document.getElementById('resultadoBox').style.display = 'block';
+    }
+
+    function limparCamposCusto() {
+      ['nivelPlano','limiteContatos','mensalidade','excedentes','custoPor100','custoExcedentes'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('resultadoBox').style.display = 'none';
+      document.getElementById('alertConsultor').style.display = 'none';
+    }
+
+    // Inicializar eventos quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('qtdContatos').addEventListener('input', calcularCustos);
+    });
+  </script>
+</body>
+</html>
