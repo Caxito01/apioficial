@@ -268,7 +268,7 @@
         document.getElementById('limiteContatos').value = '10.000+';
         document.getElementById('mensalidade').value = formatarMoeda(1799);
         document.getElementById('custoPor100').value = formatarMoeda(17.99);
-        const excedentes = Math.max(0, qtd - 10000);
+        const excedentes = Math.max(0, qtd - 9999);
         document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
         
         let custoExcedentesValor = 0;
