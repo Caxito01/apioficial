@@ -167,11 +167,10 @@
               <tbody>
                 <tr id="linha-nivel-1"><td>Nível 1</td><td>Até 500</td><td>R$ 199,00</td><td>R$ 39,80</td></tr>
                 <tr id="linha-nivel-2"><td>Nível 2</td><td>Até 1.000</td><td>R$ 299,00</td><td>R$ 23,90</td></tr>
-                <tr id="linha-nivel-3"><td>Nível 3</td><td>Até 2.500</td><td>R$ 599,00</td><td>R$ 23,96</td></tr>
-                <tr id="linha-nivel-4"><td>Nível 4</td><td>Até 5.000</td><td>R$ 999,00</td><td>R$ 19,98</td></tr>
-                <tr id="linha-nivel-5"><td>Nível 5</td><td>Até 8.000</td><td>R$ 1.499,00</td><td>R$ 18,74</td></tr>
-                <tr id="linha-nivel-6"><td>Nível 6</td><td>Até 10.000</td><td>R$ 1.799,00</td><td>R$ 17,99</td></tr>
-                <tr id="linha-nivel-7"><td>Nível 7</td><td>10.000+</td><td>Consultor</td><td>Consultor</td></tr>
+                <tr id="linha-nivel-3"><td>Nível 3</td><td>Até 4.999</td><td>R$ 599,00</td><td>R$ 23,96</td></tr>
+                <tr id="linha-nivel-4"><td>Nível 4</td><td>5.000 - 7.999</td><td>R$ 999,00</td><td>R$ 19,98</td></tr>
+                <tr id="linha-nivel-5"><td>Nível 5</td><td>8.000 - 9.999</td><td>R$ 1.499,00</td><td>R$ 18,74</td></tr>
+                <tr id="linha-nivel-6"><td>Nível 6</td><td>10.000+</td><td>R$ 1.799,00</td><td>R$ 17,99</td></tr>
               </tbody>
             </table>
           </div>
@@ -184,11 +183,10 @@
     const planos = [
       { nivel: 1, limite: 500, mensalidade: 199, custoPor100: 39.80 },
       { nivel: 2, limite: 1000, mensalidade: 299, custoPor100: 23.90 },
-      { nivel: 3, limite: 2500, mensalidade: 599, custoPor100: 23.96 },
-      { nivel: 4, limite: 5000, mensalidade: 999, custoPor100: 19.98 },
-      { nivel: 5, limite: 8000, mensalidade: 1499, custoPor100: 18.74 },
-      { nivel: 6, limite: 10000, mensalidade: 1799, custoPor100: 17.99 },
-      { nivel: 7, limite: Infinity, mensalidade: null, custoPor100: null }
+      { nivel: 3, limite: 4999, mensalidade: 599, custoPor100: 23.96 },
+      { nivel: 4, limite: 7999, mensalidade: 999, custoPor100: 19.98 },
+      { nivel: 5, limite: 9999, mensalidade: 1499, custoPor100: 18.74 },
+      { nivel: 6, limite: Infinity, mensalidade: 1799, custoPor100: 17.99 }
     ];
 
     function formatarMoeda(valor) {
@@ -264,18 +262,29 @@
       // Encontra o plano que atende essa quantidade
       const plano = planos.find(p => qtd <= p.limite);
       
-      if (!plano || plano.nivel === 7) {
-        // Nível 7 - acima de 10.000
-        document.getElementById('nivelPlano').value = 'Nível 7';
+      if (!plano) {
+        // Nível 6 - 10.000+
+        document.getElementById('nivelPlano').value = 'Nível 6';
         document.getElementById('limiteContatos').value = '10.000+';
-        document.getElementById('mensalidade').value = 'Fale com consultor';
-        document.getElementById('excedentes').value = '-';
-        document.getElementById('custoPor100').value = '-';
-        document.getElementById('custoExcedentes').value = '-';
-        document.getElementById('custoTotal').textContent = 'Fale com consultor';
-        document.getElementById('alertConsultor').style.display = 'block';
-        // Destaca linha do Nível 7
-        document.getElementById('linha-nivel-7').classList.add('destaque-nivel');
+        document.getElementById('mensalidade').value = formatarMoeda(1799);
+        document.getElementById('custoPor100').value = formatarMoeda(17.99);
+        const excedentes = Math.max(0, qtd - 10000);
+        document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
+        
+        let custoExcedentesValor = 0;
+        if (excedentes === 0) {
+          document.getElementById('custoExcedentes').value = formatarMoeda(0);
+        } else {
+          const blocosExcedentes = Math.ceil(excedentes / 100);
+          custoExcedentesValor = blocosExcedentes * 17.99;
+          document.getElementById('custoExcedentes').value = `${blocosExcedentes} × ${formatarMoeda(17.99)} = ${formatarMoeda(custoExcedentesValor)}`;
+        }
+        
+        const total = 1799 + custoExcedentesValor;
+        document.getElementById('custoTotal').textContent = formatarMoeda(total);
+        document.getElementById('alertConsultor').style.display = 'none';
+        // Destaca linha do Nível 6
+        document.getElementById('linha-nivel-6').classList.add('destaque-nivel');
         document.getElementById('resultadoBox').style.display = 'block';
         return;
       }
@@ -289,20 +298,14 @@
       // Destaca a linha da tabela do nível atual
       document.getElementById('linha-nivel-' + plano.nivel).classList.add('destaque-nivel');
 
-      // IMPORTANTE: Calcula excedentes com base no NÍVEL ANTERIOR
-      let limitePlanAnterior = 0;
-      if (plano.nivel > 1) {
-        const planAnterior = planos.find(p => p.nivel === plano.nivel - 1);
-        limitePlanAnterior = planAnterior ? planAnterior.limite : 0;
-      }
-
-      const excedentes = Math.max(0, qtd - limitePlanAnterior);
+      // Calcula excedentes com base no LIMITE DO NÍVEL ATUAL
+      const excedentes = Math.max(0, qtd - plano.limite);
       
       document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
       document.getElementById('custoPor100').value = formatarMoeda(plano.custoPor100);
       
       let custoExcedentesValor = 0;
-      if (excedentes === 0 || plano.nivel === 1) {
+      if (excedentes === 0) {
         // Sem excedentes
         document.getElementById('custoExcedentes').value = formatarMoeda(0);
       } else {
