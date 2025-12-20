@@ -255,6 +255,33 @@
         return;
       }
 
+      if (qtd < 1 || qtd > 999) {
+        // Se for menor que 1 ou maior que 999, aplicar lógica normal
+      } else {
+        // Para 1-999, forçar Nível 1
+        const plano = planos[0]; // Nível 1
+        document.getElementById('alertConsultor').style.display = 'none';
+        document.getElementById('nivelPlano').value = 'Nível ' + plano.nivel;
+        document.getElementById('limiteContatos').value = plano.contatosInclusos.toLocaleString('pt-BR');
+        document.getElementById('mensalidade').value = formatarMoeda(plano.mensalidade);
+        document.getElementById('custoPor100').value = formatarMoeda(plano.custoPor100);
+        document.getElementById('linha-nivel-' + plano.nivel).classList.add('destaque-nivel');
+        const excedentes = Math.max(0, qtd - plano.contatosInclusos);
+        document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
+        let custoExcedentesValor = 0;
+        if (excedentes === 0) {
+          document.getElementById('custoExcedentes').value = formatarMoeda(0);
+        } else {
+          const blocosExcedentes = Math.ceil(excedentes / 100);
+          custoExcedentesValor = blocosExcedentes * plano.custoPor100;
+          document.getElementById('custoExcedentes').value = `${blocosExcedentes} × ${formatarMoeda(plano.custoPor100)} = ${formatarMoeda(custoExcedentesValor)}`;
+        }
+        const total = plano.mensalidade + custoExcedentesValor;
+        document.getElementById('custoTotal').textContent = formatarMoeda(total);
+        document.getElementById('resultadoBox').style.display = 'block';
+        return;
+      }
+
       // Remove destaque anterior de todas as linhas
       document.querySelectorAll('tbody tr').forEach(tr => {
         tr.classList.remove('destaque-nivel');
