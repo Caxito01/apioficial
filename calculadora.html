@@ -182,12 +182,12 @@
 
   <script>
     const planos = [
-      { nivel: 1, franquia: 500, limiteMaximo: 999, mensalidade: 199, custoPor100: 39.80 },
-      { nivel: 2, franquia: 1000, limiteMaximo: 2499, mensalidade: 299, custoPor100: 23.90 },
-      { nivel: 3, franquia: 2500, limiteMaximo: 4999, mensalidade: 599, custoPor100: 23.96 },
-      { nivel: 4, franquia: 5000, limiteMaximo: 7999, mensalidade: 999, custoPor100: 19.98 },
-      { nivel: 5, franquia: 8000, limiteMaximo: 9999, mensalidade: 1499, custoPor100: 18.74 },
-      { nivel: 6, franquia: 10000, limiteMaximo: 10000, mensalidade: 1799, custoPor100: 17.99 }
+      { nivel: 1, minimo: 0, maximo: 999, contatosInclusos: 500, mensalidade: 199, custoPor100: 39.80 },
+      { nivel: 2, minimo: 1000, maximo: 2499, contatosInclusos: 1000, mensalidade: 299, custoPor100: 23.90 },
+      { nivel: 3, minimo: 2500, maximo: 4999, contatosInclusos: 2500, mensalidade: 599, custoPor100: 23.96 },
+      { nivel: 4, minimo: 5000, maximo: 7999, contatosInclusos: 5000, mensalidade: 999, custoPor100: 19.98 },
+      { nivel: 5, minimo: 8000, maximo: 9999, contatosInclusos: 8000, mensalidade: 1499, custoPor100: 18.74 },
+      { nivel: 6, minimo: 10000, maximo: 10000, contatosInclusos: 10000, mensalidade: 1799, custoPor100: 17.99 }
     ];
 
     function formatarMoeda(valor) {
@@ -261,12 +261,12 @@
       });
 
       // Encontra o plano que atende essa quantidade
-      const plano = planos.find(p => qtd >= p.franquia && qtd <= p.limiteMaximo);
+      const plano = planos.find(p => qtd >= p.minimo && qtd <= p.maximo);
       
       if (!plano) {
         // Acima de 10.000 - consultor
         document.getElementById('nivelPlano').value = 'Nível 7';
-        document.getElementById('limiteContatos').value = '10.000+';
+        document.getElementById('limiteContatos').value = '10.001+';
         document.getElementById('mensalidade').value = 'Fale com consultor';
         document.getElementById('excedentes').value = '-';
         document.getElementById('custoPor100').value = '-';
@@ -279,15 +279,15 @@
 
       document.getElementById('alertConsultor').style.display = 'none';
       document.getElementById('nivelPlano').value = 'Nível ' + plano.nivel;
-      document.getElementById('limiteContatos').value = plano.franquia.toLocaleString('pt-BR');
+      document.getElementById('limiteContatos').value = plano.contatosInclusos.toLocaleString('pt-BR');
       document.getElementById('mensalidade').value = formatarMoeda(plano.mensalidade);
       document.getElementById('custoPor100').value = formatarMoeda(plano.custoPor100);
 
       // Destaca a linha da tabela do nível atual
       document.getElementById('linha-nivel-' + plano.nivel).classList.add('destaque-nivel');
 
-      // Calcula excedentes em relação à FRANQUIA do nível
-      const excedentes = Math.max(0, qtd - plano.franquia);
+      // Calcula excedentes em relação aos CONTATOS INCLUSOS do nível
+      const excedentes = Math.max(0, qtd - plano.contatosInclusos);
       
       document.getElementById('excedentes').value = excedentes.toLocaleString('pt-BR');
       
