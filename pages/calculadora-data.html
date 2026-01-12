@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BotConversa - Calculadora de Data</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%232a9d8f' width='100' height='100'/><text x='50' y='65' font-size='60' font-weight='bold' text-anchor='middle' fill='white'>B</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="header">
+    <h1>BotConversa</h1>
+    <span>BEM-VINDO, USUÁRIO</span>
+  </div>
+  
+  <div class="container">
+    <div class="main">
+      <div class="breadcrumb">
+        <a href="../index.html">Início</a> › <span>Calculadora de Data</span>
+      </div>
+      <div class="page-title">📆 CALCULADORA DE DATA FUTURA</div>
+      
+      <!-- SEÇÃO 1: Calculadora de Data -->
+      <div class="card">
+        <div class="card-header">📆 CALCULADORA DE DATA FUTURA</div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Quantidade de Dias</label>
+              <input type="number" id="quantidadeDias" placeholder="Insira a quantidade de dias" min="1">
+            </div>
+            <div class="form-group">
+              <label>Data Hoje</label>
+              <input type="text" id="dataHoje" disabled placeholder="">
+            </div>
+            <div class="form-group">
+              <label>Data Resultante</label>
+              <input type="text" id="dataResultante" disabled placeholder="---">
+            </div>
+          </div>
+          
+          <div class="resultado-box" id="resultadoBoxData" style="display: none;">
+            <div class="total-label">📊 RESULTADO FINAL</div>
+            <div class="total-value" id="dataFinal">---</div>
+            <div class="conta-texto" id="contaData"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explicação -->
+      <div class="card">
+        <div class="card-header">ℹ️ COMO FUNCIONA</div>
+        <div class="card-body">
+          <p><strong>O que é essa calculadora?</strong></p>
+          <p>Calcula uma data futura adicionando uma quantidade de dias a partir de hoje</p>
+          
+          <p style="margin-top: 15px;"><strong>Como calcular:</strong></p>
+          <ol style="margin-left: 20px; margin-top: 10px;">
+            <li>Insira a quantidade de dias que deseja adicionar</li>
+            <li>A calculadora mostrará a data de hoje</li>
+            <li>E exibirá a data resultante após adicionar os dias informados</li>
+          </ol>
+
+          <p style="margin-top: 15px;"><strong>Exemplo:</strong></p>
+          <ul style="margin-left: 20px; margin-top: 10px;">
+            <li>Data hoje: 12 de janeiro de 2026</li>
+            <li>Você adiciona: 76 dias</li>
+            <li>Data resultante: 30 de março de 2026</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/functions.js"></script>
+  <script>
+    // Inicializar data de hoje ao carregar a página
+    function inicializarDataHoje() {
+      const hoje = new Date();
+      const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dataFormatada = hoje.toLocaleDateString('pt-BR', opcoes);
+      document.getElementById('dataHoje').value = dataFormatada;
+    }
+
+    function calcularDataFutura() {
+      const input = document.getElementById('quantidadeDias').value;
+      
+      if (!input || input <= 0) {
+        document.getElementById('dataResultante').value = '';
+        document.getElementById('contaData').innerHTML = '';
+        document.getElementById('resultadoBoxData').style.display = 'none';
+        return;
+      }
+
+      const dias = parseInt(input);
+      const hoje = new Date();
+      const dataFutura = new Date(hoje);
+      dataFutura.setDate(dataFutura.getDate() + dias);
+
+      const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dataFormatada = dataFutura.toLocaleDateString('pt-BR', opcoes);
+      
+      document.getElementById('dataResultante').value = dataFormatada;
+
+      // Mostrar resultado
+      const dia = dataFutura.getDate();
+      const mes = dataFutura.getMonth() + 1;
+      const ano = dataFutura.getFullYear();
+
+      const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 
+                     'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+      const nomeMes = meses[mes - 1];
+
+      document.getElementById('dataFinal').textContent = `${dia} de ${nomeMes} de ${ano}`;
+      
+      document.getElementById('contaData').innerHTML = `
+        <strong>Cálculo:</strong><br>
+        Data de hoje + ${dias} dias = ${dia}/${mes}/${ano}
+      `;
+
+      document.getElementById('resultadoBoxData').style.display = 'block';
+    }
+
+    // Event listener
+    document.getElementById('quantidadeDias').addEventListener('input', calcularDataFutura);
+
+    // Inicializar ao carregar a página
+    window.addEventListener('load', inicializarDataHoje);
+  </script>
+</body>
+</html>
